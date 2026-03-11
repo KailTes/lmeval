@@ -1,0 +1,11 @@
+dataset_name: date_understanding
+description: 'Infer the date from context.
+
+
+  '
+doc_to_text: 'Q: {{input}}
+
+  A: Let''s think step by step. Put your final answer in the format of "So the answer
+  is [ANSWER]" (without quotes) where [ANSWER] is your answer.'
+include: _bbh_aligned_template_yaml
+task: bbh_aligned_date_understanding

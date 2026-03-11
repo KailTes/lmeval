@@ -1,0 +1,35 @@
+aggregate_metric_list:
+- aggregation: mean
+  metric: exact_match
+  weight_by_size: true
+group: bbh_aligned
+metadata:
+  version: 1.0
+task:
+- bbh_aligned_boolean_expressions
+- bbh_aligned_causal_judgement
+- bbh_aligned_date_understanding
+- bbh_aligned_disambiguation_qa
+- bbh_aligned_dyck_languages
+- bbh_aligned_formal_fallacies
+- bbh_aligned_geometric_shapes
+- bbh_aligned_hyperbaton
+- bbh_aligned_logical_deduction_five_objects
+- bbh_aligned_logical_deduction_seven_objects
+- bbh_aligned_logical_deduction_three_objects
+- bbh_aligned_movie_recommendation
+- bbh_aligned_multistep_arithmetic_two
+- bbh_aligned_navigate
+- bbh_aligned_object_counting
+- bbh_aligned_penguins_in_a_table
+- bbh_aligned_reasoning_about_colored_objects
+- bbh_aligned_ruin_names
+- bbh_aligned_salient_translation_error_detection
+- bbh_aligned_snarks
+- bbh_aligned_sports_understanding
+- bbh_aligned_temporal_sequences
+- bbh_aligned_tracking_shuffled_objects_five_objects
+- bbh_aligned_tracking_shuffled_objects_seven_objects
+- bbh_aligned_tracking_shuffled_objects_three_objects
+- bbh_aligned_web_of_lies
+- bbh_aligned_word_sorting
