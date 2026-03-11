@@ -1,0 +1,5 @@
+description: "The following are multiple choice questions (with answers) about math.\n\n"
+include: "_default_template_yaml"
+task: "mmlu_pro_math_aligned"
+task_alias: "math"
+process_docs: !function utils.process_math

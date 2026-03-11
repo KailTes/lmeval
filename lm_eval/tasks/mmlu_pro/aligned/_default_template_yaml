@@ -1,0 +1,33 @@
+dataset_path: TIGER-Lab/MMLU-Pro
+test_split: test
+dataset_kwargs:
+  trust_remote_code: true
+
+output_type: generate_until
+
+doc_to_text: !function utils.doc_to_text
+doc_to_target: answer
+
+process_results: !function utils.process_results
+
+generation_kwargs:
+  until:
+    - "Question:"
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+  do_sample: false
+  temperature: 0
+  max_gen_toks: 4096
+
+num_fewshot: 0
+
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+
+metadata:
+  version: 1.0

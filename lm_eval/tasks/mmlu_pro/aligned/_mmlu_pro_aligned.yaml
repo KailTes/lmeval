@@ -1,0 +1,22 @@
+aggregate_metric_list:
+- aggregation: mean
+  metric: exact_match
+  weight_by_size: true
+group: mmlu_pro_aligned
+metadata:
+  version: 1
+task:
+- mmlu_pro_biology_aligned
+- mmlu_pro_business_aligned
+- mmlu_pro_chemistry_aligned
+- mmlu_pro_computer_science_aligned
+- mmlu_pro_economics_aligned
+- mmlu_pro_engineering_aligned
+- mmlu_pro_health_aligned
+- mmlu_pro_history_aligned
+- mmlu_pro_law_aligned
+- mmlu_pro_math_aligned
+- mmlu_pro_other_aligned
+- mmlu_pro_philosophy_aligned
+- mmlu_pro_physics_aligned
+- mmlu_pro_psychology_aligned
