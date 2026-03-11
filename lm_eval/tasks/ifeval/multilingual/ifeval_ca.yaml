@@ -9,7 +9,7 @@ doc_to_target: 0
 generation_kwargs:
   until: []
   do_sample: false
-  max_gen_toks: 1280
+  max_gen_toks: 4096
 process_results: !function utils.process_results
 metric_list:
   - metric: prompt_level_strict_acc
