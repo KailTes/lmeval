@@ -180,6 +180,13 @@ def handle_arg_string(arg):
     if lower == "none":
         return None
 
+    # Try JSON dict (e.g. chat_template_args={"reasoning_effort":"high"})
+    if arg.startswith("{"):
+        try:
+            return json.loads(arg)
+        except json.JSONDecodeError:
+            pass
+
     # Try integer first (supports negative numbers unlike str.isnumeric)
     try:
         # Guard against strings like "1e3" being parsed as int via float path
