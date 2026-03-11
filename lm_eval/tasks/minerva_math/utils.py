@@ -271,6 +271,21 @@ REMOVED_EXPRESSIONS = [
 ]
 
 
+def process_results_aligned(doc: dict, results: list[str]) -> dict[str, int]:
+    """Evalscope-aligned scoring: cascading extraction + math-aware comparison.
+
+    Used by minerva_math500 (CoT + boxed prompt) to match evalscope's scoring.
+    Reuses the AIME utils which were ported from evalscope.
+    """
+    from lm_eval.tasks.aime.utils import extract_answer, math_equal
+
+    response = results[0]
+    pred = extract_answer(response)
+    target = str(doc["answer"])
+    correct = math_equal(pred, target)
+    return {"exact_match": int(correct)}
+
+
 def normalize_final_answer(final_answer: str) -> str:
     """
     Normalize a final answer to a quantitative reasoning question.
