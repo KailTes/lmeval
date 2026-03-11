@@ -4,6 +4,8 @@ from typing import Dict, List
 
 import datasets
 
+from lm_eval.tasks._gptoss_utils import extract_final_channel
+
 
 def preprocess(text):
     if text is None:
@@ -41,7 +43,7 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
 
 def process_results(doc: dict, results: List[str]) -> Dict[str, int]:
     """Robust multiple-choice answer extraction with cascading patterns."""
-    response = results[0]
+    response = extract_final_channel(results[0])
     target = doc["answer"]  # e.g. "(A)"
     pred = extract_choice(response)
     correct = pred is not None and pred == target

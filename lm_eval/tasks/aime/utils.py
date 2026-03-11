@@ -14,6 +14,8 @@ import re
 from typing import Dict, List
 
 import regex as regex_mod
+
+from lm_eval.tasks._gptoss_utils import extract_final_channel
 from latex2sympy2_extended import latex2sympy
 from math import isclose
 from sympy import N, simplify
@@ -27,7 +29,7 @@ from word2number import w2n
 # ---------------------------------------------------------------------------
 
 def process_results(doc: dict, results: List[str]) -> Dict[str, int]:
-    response = results[0]
+    response = extract_final_channel(results[0])
 
     # Extract predicted answer using cascading fallback
     pred = extract_answer(response)

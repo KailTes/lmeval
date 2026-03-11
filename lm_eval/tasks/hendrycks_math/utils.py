@@ -2,6 +2,8 @@ from typing import Dict, List
 
 import datasets
 
+from lm_eval.tasks._gptoss_utils import extract_final_channel
+
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     def _process_doc(doc: dict) -> dict:
@@ -23,7 +25,7 @@ def process_results_aligned(doc: dict, results: List[str]) -> Dict[str, int]:
     """
     from lm_eval.tasks.aime.utils import extract_answer, math_equal
 
-    response = results[0]
+    response = extract_final_channel(results[0])
     pred = extract_answer(response)
     target = str(doc["answer"])
     correct = math_equal(pred, target)

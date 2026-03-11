@@ -1,10 +1,12 @@
 import re
 from typing import Dict, List
 
+from lm_eval.tasks._gptoss_utils import extract_final_channel
+
 
 def process_results(doc: dict, results: List[str]) -> Dict[str, int]:
     """Evalscope-aligned BBH scoring with cascading extraction."""
-    response = results[0]
+    response = extract_final_channel(results[0])
     pred = extract_answer(response)
     target = doc["target"].strip()
     correct = normalize(pred) == normalize(target)

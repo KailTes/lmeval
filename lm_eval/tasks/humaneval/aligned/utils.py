@@ -13,6 +13,8 @@ from typing import Union
 
 import evaluate as hf_evaluate
 
+from lm_eval.tasks._gptoss_utils import extract_final_channel
+
 
 try:
     compute_ = hf_evaluate.load("code_eval")
@@ -36,35 +38,6 @@ def pass_at_k(
         k=k,
     )
     return res[0]
-
-
-# ---------------------------------------------------------------------------
-# GPT-OSS channel stripping (same as IFEval aligned)
-# ---------------------------------------------------------------------------
-
-_FINAL_CHANNEL_RE = re.compile(
-    r"<\|channel\|>final<\|message\|>(.*)",
-    re.DOTALL,
-)
-_TRAILING_SPECIAL_RE = re.compile(
-    r"<\|(end|start|channel|message|return|im_end|endoftext|eot_id)\|>.*$",
-    re.DOTALL,
-)
-
-
-def extract_final_channel(response: str) -> str:
-    """Extract 'final' channel content from GPT-OSS multi-channel output.
-
-    Returns the original response unchanged for non-GPT-OSS models.
-    """
-    m = _FINAL_CHANNEL_RE.search(response)
-    if m:
-        content = m.group(1)
-        content = _TRAILING_SPECIAL_RE.sub("", content)
-        return content.strip()
-    if "<|channel|>analysis" in response:
-        return ""
-    return response
 
 
 # ---------------------------------------------------------------------------

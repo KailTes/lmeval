@@ -19,7 +19,7 @@ generation_kwargs:
     - "<|return|>"
   do_sample: false
   temperature: 0
-  max_gen_toks: 4096
+  max_gen_toks: 32768
 metric_list:
   - metric: exact_match
     aggregation: mean

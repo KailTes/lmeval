@@ -2,6 +2,8 @@ import re
 from functools import partial
 from typing import Dict, List
 
+from lm_eval.tasks._gptoss_utils import extract_final_channel
+
 
 LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
@@ -29,7 +31,7 @@ def doc_to_text(doc: dict) -> str:
 
 def process_results(doc: dict, results: List[str]) -> Dict[str, int]:
     """Evalscope-aligned MMLU-Pro scoring with cascading letter extraction."""
-    response = results[0]
+    response = extract_final_channel(results[0])
     n_options = len(doc["options"])
     pred = extract_choice(response, n_options)
     target = doc["answer"]

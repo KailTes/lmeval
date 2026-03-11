@@ -11,58 +11,10 @@ In lm-eval offline mode, the raw output includes all channel tags. This filter
 extracts only the "final" channel content to match evalscope's behavior.
 """
 
-import re
 from typing import Dict, Optional, Union
 
 from lm_eval.tasks.ifeval import instructions_registry
-
-
-# ── Channel extraction ──────────────────────────────────────────────
-
-# Pattern: <|end|><|start|>assistant<|channel|>final<|message|>CONTENT
-_FINAL_CHANNEL_RE = re.compile(
-    r"<\|channel\|>final<\|message\|>(.*)",
-    re.DOTALL,
-)
-
-# Cleanup: strip any trailing special tokens from the extracted content
-_TRAILING_SPECIAL_RE = re.compile(
-    r"<\|(end|start|channel|message|return|im_end|endoftext|eot_id)\|>.*$",
-    re.DOTALL,
-)
-
-
-def extract_final_channel(response: str) -> str:
-    """Extract the 'final' channel content from a GPT-OSS multi-channel response.
-
-    If no channel tags are found, returns the original response unchanged
-    (non-GPT-OSS models or already-clean responses).
-    """
-    m = _FINAL_CHANNEL_RE.search(response)
-    if m:
-        content = m.group(1)
-        # Strip trailing special tokens
-        content = _TRAILING_SPECIAL_RE.sub("", content)
-        return content.strip()
-
-    # No channel tags — check if the response starts with analysis channel
-    # but never reached the final channel (truncated during analysis)
-    if "<|channel|>analysis" in response:
-        # Model exhausted token budget during analysis — no actual response
-        return ""
-
-    # No channel tags at all — return as-is (non-GPT-OSS model)
-    return response
-
-
-# ── Filter for lm-eval filter_list ──────────────────────────────────
-
-def strip_channel_tags(resps, docs):
-    """lm-eval filter function: extract final channel from each response."""
-    filtered = []
-    for resp_group in resps:
-        filtered.append([extract_final_channel(r) for r in resp_group])
-    return filtered
+from lm_eval.tasks._gptoss_utils import extract_final_channel
 
 
 # ── IFEval scoring (same as upstream, operating on filtered response) ──
