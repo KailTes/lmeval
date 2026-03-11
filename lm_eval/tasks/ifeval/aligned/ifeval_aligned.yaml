@@ -1,0 +1,46 @@
+task: ifeval_aligned
+dataset_path: google/IFEval
+dataset_name: null
+output_type: generate_until
+test_split: train
+num_fewshot: 0
+
+doc_to_text: prompt
+doc_to_target: 0
+
+generation_kwargs:
+  until:
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+  do_sample: false
+  temperature: 0
+  max_gen_toks: 32768
+
+# Strip GPT-OSS analysis channel before scoring
+filter_list:
+  - name: "strip_channel"
+    filter:
+      - function: "custom"
+        filter_fn: !function utils.strip_channel_tags
+
+process_results: !function utils.process_results
+
+metric_list:
+  - metric: prompt_level_strict_acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: inst_level_strict_acc
+    aggregation: !function utils.agg_inst_level_acc
+    higher_is_better: true
+  - metric: prompt_level_loose_acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: inst_level_loose_acc
+    aggregation: !function utils.agg_inst_level_acc
+    higher_is_better: true
+
+metadata:
+  version: 1.0
