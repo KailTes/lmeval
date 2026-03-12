@@ -1,0 +1,23 @@
+include: _default_template_yaml
+task: longbench_samsum_aligned
+dataset_name: samsum
+doc_to_text: "Summarize the dialogue into a few short sentences. The following are some examples.\n\n{{context}}\n{{question}}"
+doc_to_target: "{{answers}}"
+target_delimiter: ""
+process_results: !function utils.aligned_rouge
+generation_kwargs:
+  max_gen_toks: 2048
+  until:
+    - "\n"
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+metric_list:
+  - metric: score
+    aggregation: mean
+    higher_is_better: true
+  - metric: rouge_score
+    aggregation: mean
+    higher_is_better: true

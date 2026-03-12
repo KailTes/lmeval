@@ -1,0 +1,11 @@
+group: longbench_synthetic_aligned
+group_alias: "Synthetic Tasks (Aligned)"
+task:
+  - longbench_passage_count_aligned
+  - longbench_passage_retrieval_en_aligned
+  - longbench_passage_retrieval_zh_aligned
+aggregate_metric_list:
+  - metric: score
+    weight_by_size: false
+metadata:
+  version: 1.0

@@ -1,0 +1,21 @@
+include: _default_template_yaml
+task: longbench_narrativeqa_aligned
+dataset_name: narrativeqa
+doc_to_text: "You are given a story, which can be either a novel or a movie script, and a question. Answer the question as concisely as you can, using a single phrase if possible. Do not provide any explanation.\n\nStory: {{context}}\n\nNow, answer the question based on the story as concisely as you can, using a single phrase if possible. Do not provide any explanation.\n\nQuestion: {{question}}\n\nAnswer:"
+doc_to_target: "{{answers}}"
+process_results: !function utils.aligned_qa_f1
+generation_kwargs:
+  max_gen_toks: 2048
+  until:
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+metric_list:
+  - metric: score
+    aggregation: mean
+    higher_is_better: true
+  - metric: qa_f1_score
+    aggregation: mean
+    higher_is_better: true

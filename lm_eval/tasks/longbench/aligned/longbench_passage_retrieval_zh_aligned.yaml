@@ -1,0 +1,21 @@
+include: _default_template_yaml
+task: longbench_passage_retrieval_zh_aligned
+dataset_name: passage_retrieval_zh
+doc_to_text: "以下是若干段落文字，以及其中一个段落的摘要。请确定摘要出自哪个段落。\n\n{{context}}\n\n下面是一个摘要\n\n{{question}}\n\n请输入摘要所属段落的编号。答案格式必须如\"段落1\"，\"段落2\"等。\n\n答案是："
+doc_to_target: "{{answers}}"
+process_results: !function utils.aligned_retrieval_zh
+generation_kwargs:
+  max_gen_toks: 1024
+  until:
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+metric_list:
+  - metric: score
+    aggregation: mean
+    higher_is_better: true
+  - metric: retrieval_zh_score
+    aggregation: mean
+    higher_is_better: true

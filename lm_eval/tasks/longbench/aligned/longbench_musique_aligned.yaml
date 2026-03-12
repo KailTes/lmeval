@@ -1,0 +1,21 @@
+include: _default_template_yaml
+task: longbench_musique_aligned
+dataset_name: musique
+doc_to_text: "Answer the question based on the given passages. Only give me the answer and do not output any other words.\n\nThe following are given passages.\n{{context}}\n\nAnswer the question based on the given passages. Only give me the answer and do not output any other words.\n\nQuestion: {{question}}\nAnswer:"
+doc_to_target: "{{answers}}"
+process_results: !function utils.aligned_qa_f1
+generation_kwargs:
+  max_gen_toks: 2048
+  until:
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+metric_list:
+  - metric: score
+    aggregation: mean
+    higher_is_better: true
+  - metric: qa_f1_score
+    aggregation: mean
+    higher_is_better: true

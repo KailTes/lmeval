@@ -1,0 +1,12 @@
+group: longbench_multi_aligned
+group_alias: "Multi-Document QA (Aligned)"
+task:
+  - longbench_hotpotqa_aligned
+  - longbench_2wikimqa_aligned
+  - longbench_musique_aligned
+  - longbench_dureader_aligned
+aggregate_metric_list:
+  - metric: score
+    weight_by_size: false
+metadata:
+  version: 1.0

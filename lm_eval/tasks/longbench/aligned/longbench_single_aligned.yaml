@@ -1,0 +1,12 @@
+group: longbench_single_aligned
+group_alias: "Single-Document QA (Aligned)"
+task:
+  - longbench_narrativeqa_aligned
+  - longbench_qasper_aligned
+  - longbench_multifieldqa_en_aligned
+  - longbench_multifieldqa_zh_aligned
+aggregate_metric_list:
+  - metric: score
+    weight_by_size: false
+metadata:
+  version: 1.0

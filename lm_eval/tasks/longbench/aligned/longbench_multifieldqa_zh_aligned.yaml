@@ -1,0 +1,21 @@
+include: _default_template_yaml
+task: longbench_multifieldqa_zh_aligned
+dataset_name: multifieldqa_zh
+doc_to_text: "阅读以下文字并用中文简短回答：\n\n{{context}}\n\n现在请基于上述文章回答下面的问题，只告诉我答案，不要输出任何其他字词。\n\n问题：{{question}}\n回答："
+doc_to_target: "{{answers}}"
+process_results: !function utils.aligned_qa_f1_zh
+generation_kwargs:
+  max_gen_toks: 2048
+  until:
+    - "</s>"
+    - "<|im_end|>"
+    - "<|eot_id|>"
+    - "<|endoftext|>"
+    - "<|return|>"
+metric_list:
+  - metric: score
+    aggregation: mean
+    higher_is_better: true
+  - metric: qa_f1_zh_score
+    aggregation: mean
+    higher_is_better: true

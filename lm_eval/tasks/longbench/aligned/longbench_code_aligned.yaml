@@ -1,0 +1,10 @@
+group: longbench_code_aligned
+group_alias: "Code Completion (Aligned)"
+task:
+  - longbench_lcc_aligned
+  - longbench_repobench_p_aligned
+aggregate_metric_list:
+  - metric: score
+    weight_by_size: false
+metadata:
+  version: 1.0

@@ -1,0 +1,13 @@
+group: longbench_aligned
+task:
+  - longbench_single_aligned
+  - longbench_multi_aligned
+  - longbench_summarization_aligned
+  - longbench_fewshot_aligned
+  - longbench_synthetic_aligned
+  - longbench_code_aligned
+aggregate_metric_list:
+  - metric: score
+    weight_by_size: false
+metadata:
+  version: 1.0
