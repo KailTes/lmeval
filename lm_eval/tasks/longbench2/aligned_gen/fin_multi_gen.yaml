@@ -3,4 +3,4 @@ tag:
   - longbench2_gen_tasks
   - longbench2_multi_gen_tasks
 task: longbench2_fin_multi_gen
-dataset_name: finance_multi_doc
+dataset_name: financial_multi
