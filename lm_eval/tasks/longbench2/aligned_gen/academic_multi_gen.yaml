@@ -1,0 +1,6 @@
+include: _default_template_yaml
+tag:
+  - longbench2_gen_tasks
+  - longbench2_multi_gen_tasks
+task: longbench2_academic_multi_gen
+dataset_name: academic_multi_doc

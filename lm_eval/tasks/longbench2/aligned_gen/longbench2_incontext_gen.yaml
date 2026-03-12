@@ -1,0 +1,11 @@
+group: longbench2_incontext_gen
+group_alias: "In-Context Learning (Gen)"
+task:
+  - longbench2_user_guide_gen
+  - longbench2_translate_gen
+  - longbench2_many_shot_gen
+aggregate_metric_list:
+  - metric: acc
+    weight_by_size: true
+metadata:
+  version: 1.0

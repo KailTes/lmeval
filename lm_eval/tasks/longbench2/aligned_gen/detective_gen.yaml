@@ -1,0 +1,6 @@
+include: _default_template_yaml
+tag:
+  - longbench2_gen_tasks
+  - longbench2_single_gen_tasks
+task: longbench2_detective_gen
+dataset_name: detective

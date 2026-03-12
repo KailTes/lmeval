@@ -1,0 +1,10 @@
+group: longbench2_history_gen
+group_alias: "History (Gen)"
+task:
+  - longbench2_agent_history_gen
+  - longbench2_dialogue_history_gen
+aggregate_metric_list:
+  - metric: acc
+    weight_by_size: true
+metadata:
+  version: 1.0

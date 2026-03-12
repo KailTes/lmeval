@@ -1,0 +1,14 @@
+group: longbench2_gen
+group_alias: "LongBench v2 Generative"
+task:
+  - longbench2_single_gen
+  - longbench2_multi_gen
+  - longbench2_incontext_gen
+  - longbench2_history_gen
+  - longbench2_structured_gen
+  - longbench2_code_gen
+aggregate_metric_list:
+  - metric: acc
+    weight_by_size: true
+metadata:
+  version: 1.0

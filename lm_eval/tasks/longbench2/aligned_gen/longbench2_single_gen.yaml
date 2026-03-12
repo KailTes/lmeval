@@ -1,0 +1,15 @@
+group: longbench2_single_gen
+group_alias: "Single-Document QA (Gen)"
+task:
+  - longbench2_govt_single_gen
+  - longbench2_legal_single_gen
+  - longbench2_lit_single_gen
+  - longbench2_fin_single_gen
+  - longbench2_event_order_gen
+  - longbench2_academic_single_gen
+  - longbench2_detective_gen
+aggregate_metric_list:
+  - metric: acc
+    weight_by_size: true
+metadata:
+  version: 1.0

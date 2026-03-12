@@ -1,0 +1,10 @@
+group: longbench2_structured_gen
+group_alias: "Structured Data (Gen)"
+task:
+  - longbench2_graph_gen
+  - longbench2_table_gen
+aggregate_metric_list:
+  - metric: acc
+    weight_by_size: true
+metadata:
+  version: 1.0
