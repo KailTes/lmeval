@@ -24,5 +24,6 @@ metric_list:
   - metric: exact_match
     aggregation: mean
     higher_is_better: true
+repeats: 10
 metadata:
   version: 1.0

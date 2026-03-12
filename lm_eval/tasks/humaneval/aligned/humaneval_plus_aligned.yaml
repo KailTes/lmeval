@@ -30,7 +30,7 @@ generation_kwargs:
   do_sample: false
   temperature: 0
 
-repeats: 1
+repeats: 10
 num_fewshot: 0
 
 metadata:
