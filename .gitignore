@@ -30,6 +30,11 @@ output/
 data/
 temp/
 test_logs/
+results/
+
+# NPU runtime files
+.serve_pid
+vllm_serve.log
 
 # Caching
 lm_eval/caching/.cache

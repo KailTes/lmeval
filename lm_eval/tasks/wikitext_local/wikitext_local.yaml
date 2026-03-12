@@ -1,0 +1,21 @@
+task: wikitext_local
+dataset_path: parquet
+dataset_kwargs:
+  data_files:
+    test: __TASK_DIR__/test-00000-of-00001.parquet
+    train: __TASK_DIR__/train-00000-of-00001.parquet
+    validation: __TASK_DIR__/validation-00000-of-00001.parquet
+output_type: loglikelihood_rolling
+test_split: test
+doc_to_text: ""
+doc_to_target: "{{text}}"
+process_results: !function preprocess_wikitext_local.process_results
+metric_list:
+  - metric: word_perplexity
+    higher_is_better: false
+  - metric: byte_perplexity
+    higher_is_better: false
+  - metric: bits_per_byte
+    higher_is_better: false
+metadata:
+  version: 1.0
