@@ -161,6 +161,10 @@ bash tools/npu_ppl_eval.sh run_int8 /data/weights/pangu_v2/21B/iter_0213000    #
 
 # 方式 2：完整对比 (BF16 → 量化 → INT8，全自动)
 bash tools/npu_ppl_eval.sh compare /data/weights/pangu_v2/21B/iter_0213000
+
+# 方式 3：启用 INT8 KV cache 量化 (可选，进一步节省显存)
+KV_CACHE_DTYPE=int8 bash tools/npu_ppl_eval.sh run_bf16 /data/weights/pangu_v2/21B/iter_0213000
+KV_CACHE_DTYPE=int8 bash tools/npu_ppl_eval.sh run_int8 /data/weights/pangu_v2/21B/iter_0213000
 ```
 
 ---
@@ -198,6 +202,7 @@ bash tools/npu_ppl_eval.sh run_int8 /models/Qwen3-0.6B /data/models/Qwen3-0.6B-R
 | `DTYPE` | `bfloat16` | 模型精度 |
 | `VLLM_PLUGINS` | 自动检测 | vllm 插件列表 (PanGu 自动设置) |
 | `VLLM_USE_V1` | `0` (PanGu 自动设为 `1`) | vllm V1 引擎开关 |
+| `KV_CACHE_DTYPE` | `auto` | KV cache 精度 (`auto`=不量化, `int8`=INT8 量化; 昇腾不支持 FP8) |
 | `EXTRA_SERVE_ARGS` | 空 | 额外 vllm serve 参数 |
 | `QUANT_OUTPUT_BASE` | 模型所在目录 | 量化输出的父目录 |
 
@@ -216,9 +221,13 @@ bash tools/npu_ppl_eval.sh run_int8 /models/Qwen3-0.6B /data/models/Qwen3-0.6B-R
 
 ## 验证结果 (PanGu V2 MoE Dummy, WikiText-2, 单卡 910B1)
 
-| 模型 | bits_per_byte | word_perplexity |
+| 配置 | bits_per_byte | word_perplexity |
 |------|---------------|-----------------|
-| BF16 dummy | 33.5685 | 4.43e53 |
-| W8A8 INT8 dummy | 33.5598 | 4.29e53 |
+| BF16 | 33.5685 | 4.43e53 |
+| BF16 + INT8 KV cache | 33.5685 | 4.43e53 |
+| W8A8 INT8 | 33.5598 | 4.29e53 |
+| W8A8 INT8 + INT8 KV cache | 33.5598 | 4.29e53 |
 
 > 数值巨大是因为使用了随机权重，仅验证管线正确性。真实权重的 PPL 应在合理范围内。
+> 昇腾 910B 不支持 FP8 KV cache（`--kv-cache-dtype fp8` 会报 `DT_UINT8` 不支持），
+> 但原生支持 INT8 KV cache（`--kv-cache-dtype int8`，需自动 patch vllm CLI）。

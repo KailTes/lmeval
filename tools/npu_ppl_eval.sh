@@ -21,6 +21,8 @@
 #   MAX_MODEL_LEN              — 最大序列长度 (默认: 2048)
 #   DTYPE                      — 模型精度 (默认: bfloat16)
 #   VLLM_PLUGINS               — vllm 插件 (PanGu 自动设置)
+#   KV_CACHE_DTYPE             — KV cache 精度 (默认: auto, 可选: int8)
+#                                注意: 使用 int8 需要先 patch vllm，见 patch_vllm_kv_int8()
 #   EXTRA_SERVE_ARGS           — 额外 vllm serve 参数
 # ============================================================
 
@@ -58,6 +60,19 @@ resolve_paths() {
     QUANT_OUTPUT_RTN="${out_base}/${MODEL_NAME}-RTN-W8A8"
     RESULTS_DIR="${PROJECT_ROOT}/results"
     RESULTS_PATH="${RESULTS_DIR}/${MODEL_NAME}"
+}
+
+# Patch vllm 以支持 INT8 KV cache (昇腾 NPU 专用)
+# 昇腾 910B 的 npu_kv_rmsnorm_rope_cache 算子原生支持 DT_INT8 KV cache，
+# 但 vllm 的 CLI 未暴露 int8 选项。此 patch 添加 "int8" 到 CacheDType 定义。
+patch_vllm_kv_int8() {
+    local cache_cfg
+    cache_cfg=$(python3 -c "import vllm.config.cache; print(vllm.config.cache.__file__)" 2>/dev/null)
+    [ -z "${cache_cfg}" ] && return
+    if ! grep -q '"int8"' "${cache_cfg}" 2>/dev/null; then
+        sed -i 's/"fp8_ds_mla",/"fp8_ds_mla",\n    "int8",/' "${cache_cfg}"
+        info "Patched vllm CacheDType: added int8 support"
+    fi
 }
 
 # 自动查找 CANN set_env.sh
@@ -136,6 +151,18 @@ do_serve() {
     [ -n "${VLLM_PLUGINS:-}" ] && info "VLLM_PLUGINS: ${VLLM_PLUGINS}"
 
     local max_model_len="${MAX_MODEL_LEN:-2048}"
+    local kv_cache_dtype="${KV_CACHE_DTYPE:-auto}"
+
+    # KV cache 量化参数 (可选)
+    local kv_cache_args=""
+    if [ "${kv_cache_dtype}" != "auto" ]; then
+        # INT8 KV cache 需要 patch vllm
+        if [ "${kv_cache_dtype}" = "int8" ]; then
+            patch_vllm_kv_int8
+        fi
+        kv_cache_args="--kv-cache-dtype ${kv_cache_dtype}"
+        info "KV cache dtype: ${kv_cache_dtype}"
+    fi
 
     python3 -m vllm.entrypoints.openai.api_server \
         --model "${model_path}" \
@@ -146,6 +173,7 @@ do_serve() {
         --max-model-len "${max_model_len}" \
         --host 0.0.0.0 \
         --port "${SERVE_PORT}" \
+        ${kv_cache_args} \
         ${EXTRA_SERVE_ARGS:-} \
         > "${PROJECT_ROOT}/vllm_serve.log" 2>&1 &
 
@@ -306,6 +334,7 @@ case "${1:-help}" in
         echo "  SERVE_PORT                 vllm serve 端口 (默认: 8000)"
         echo "  MAX_MODEL_LEN              最大序列长度 (默认: 2048)"
         echo "  DTYPE                      模型精度 (默认: bfloat16)"
+        echo "  KV_CACHE_DTYPE             KV cache 精度 (默认: auto, 可选: int8)"
         echo "  VLLM_PLUGINS               vllm 插件 (PanGu 自动设置)"
         echo "  EXTRA_SERVE_ARGS           额外 vllm serve 参数"
         echo ""
@@ -315,5 +344,8 @@ case "${1:-help}" in
         echo ""
         echo "  # 4卡 EP 完整对比"
         echo "  ASCEND_RT_VISIBLE_DEVICES=0,1,2,3 TP_SIZE=4 bash tools/npu_ppl_eval.sh compare /data/models/PanGu-21B"
+        echo ""
+        echo "  # INT8 + INT8 KV cache (昇腾不支持 FP8)"
+        echo "  KV_CACHE_DTYPE=int8 bash tools/npu_ppl_eval.sh run_int8 /data/models/PanGu-21B"
         ;;
 esac
